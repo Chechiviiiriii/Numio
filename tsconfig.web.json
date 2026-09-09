@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/renderer/src/**/*"
+  ],
+  "compilerOptions": {
+    "composite": false
+  }
+}
