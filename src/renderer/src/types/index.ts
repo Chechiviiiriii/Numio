@@ -47,7 +47,8 @@ export interface Budget {
   userId: string
   categoriaId: string
   limite: number
-  mes: string
+  mes: string | null
+  esPlantilla?: boolean
 }
 
 declare global {

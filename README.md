@@ -8,7 +8,7 @@ construida con Electron + React + TypeScript + Firebase.
 - Gestión de transacciones (ingresos y gastos) con búsqueda, filtros y paginación
 - Categorías personalizables con color, separadas por tipo
 - Transacciones e ingresos recurrentes (diario, semanal, mensual, anual) con recuperación de periodos vencidos
-- Presupuestos mensuales por categoría con barra de progreso (verde / ámbar / rojo)
+- Presupuestos por categoría con plantilla mensual recurrente y excepciones por mes: define un límite por defecto que se aplica automáticamente cada mes y personalízalo para meses concretos cuando sea necesario; barra de progreso (verde / ámbar / rojo)
 - Dashboard con gráficas (pastel + línea), resumen mensual y tabla por categoría
 - Sincronización en tiempo real y multidispositivo con Firebase
 - Autenticación por email y contraseña
