@@ -4,6 +4,7 @@ import { Charts } from '../components/dashboard/Charts'
 import { useDataStore } from '../stores/dataStore'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { capitalize } from '../lib/format'
 
 export function Dashboard(): React.ReactElement {
   const { recurrences, categories } = useDataStore()
@@ -21,7 +22,7 @@ export function Dashboard(): React.ReactElement {
       <div>
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
-          {format(new Date(), "MMMM yyyy", { locale: es })}
+          {capitalize(format(new Date(), "MMMM yyyy", { locale: es }))}
         </p>
       </div>
 
@@ -34,7 +35,7 @@ export function Dashboard(): React.ReactElement {
           <div className="space-y-2">
             {upcoming.map((r) => {
               const fecha = (() => {
-                try { return format(parseISO(r.proximaEjecucion), "d MMM yyyy", { locale: es }) }
+                try { return capitalize(format(parseISO(r.proximaEjecucion), "d MMM yyyy", { locale: es })) }
                 catch { return r.proximaEjecucion }
               })()
               return (

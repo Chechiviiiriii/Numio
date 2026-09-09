@@ -1,8 +1,10 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { useThemeStore } from '../../stores/themeStore'
+import { useAuthStore } from '../../stores/authStore'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../firebase/config'
+import { Switch } from '../ui/Switch'
 
 const navItems = [
   {
@@ -44,11 +46,29 @@ const navItems = [
   }
 ]
 
+function getInitials(nombre: string | undefined, email: string | undefined): string {
+  if (nombre?.trim()) {
+    const parts = nombre.trim().split(/\s+/)
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    }
+    return nombre.slice(0, 2).toUpperCase()
+  }
+  return (email ?? '??').slice(0, 2).toUpperCase()
+}
+
 export function Sidebar(): React.ReactElement {
-  const { theme, toggleTheme } = useThemeStore()
+  const { theme, setTheme } = useThemeStore()
+  const { profile, user } = useAuthStore()
+
+  const isDark = theme === 'dark'
+  const displayName = profile?.nombre?.trim() ?? ''
+  const displayEmail = profile?.email ?? user?.email ?? ''
+  const initials = getInitials(displayName || undefined, displayEmail || undefined)
 
   return (
     <aside className="w-60 flex-shrink-0 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+      {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
         <h1 className="text-lg font-bold text-primary-600 dark:text-primary-400">
           Numio
@@ -56,6 +76,7 @@ export function Sidebar(): React.ReactElement {
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Tus cuentas, claras.</p>
       </div>
 
+      {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navItems.map((item) => (
           <NavLink
@@ -76,31 +97,52 @@ export function Sidebar(): React.ReactElement {
         ))}
       </nav>
 
-      <div className="px-3 py-4 border-t border-gray-200 dark:border-gray-700 space-y-1">
-        <button
-          onClick={toggleTheme}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        >
-          {theme === 'dark' ? (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          ) : (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* Footer */}
+      <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        {/* Theme row */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
-          )}
-          {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-        </button>
-        <button
-          onClick={() => signOut(auth)}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          Cerrar sesión
-        </button>
+            <span>Tema oscuro</span>
+          </div>
+          <Switch
+            checked={isDark}
+            onChange={(v) => setTheme(v ? 'dark' : 'light')}
+            ariaLabel="Alternar tema oscuro"
+          />
+        </div>
+
+        {/* User row */}
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Avatar */}
+          <div className="w-9 h-9 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
+            <span className="text-sm font-semibold text-white leading-none">{initials}</span>
+          </div>
+          {/* Name + email */}
+          <div className="flex-1 min-w-0">
+            {displayName ? (
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate leading-tight">
+                {displayName}
+              </p>
+            ) : null}
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate leading-tight">
+              {displayEmail}
+            </p>
+          </div>
+          {/* Logout */}
+          <button
+            type="button"
+            onClick={() => signOut(auth)}
+            aria-label="Cerrar sesión"
+            className="flex-shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+        </div>
       </div>
     </aside>
   )

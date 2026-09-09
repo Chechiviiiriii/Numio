@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useDataStore } from '../../stores/dataStore'
 import { Card } from '../ui/Card'
 import { startOfMonth, endOfMonth, parseISO } from 'date-fns'
+import { capitalize } from '../../lib/format'
 
 function inRange(iso: string, from: Date, to: Date): boolean {
   try {
@@ -65,7 +66,7 @@ export function SummaryCards(): React.ReactElement {
       </div>
 
       {catSummary.length > 0 && (
-        <Card title="Resumen por categoría (este mes)">
+        <Card title="Resumen por categoría">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -82,7 +83,7 @@ export function SummaryCards(): React.ReactElement {
                     <td className="py-2 text-gray-800 dark:text-gray-200">{row.nombre}</td>
                     <td className="py-2">
                       <span className={`text-xs rounded-full px-2 py-0.5 ${row.tipo === 'ingreso' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'}`}>
-                        {row.tipo}
+                        {capitalize(row.tipo)}
                       </span>
                     </td>
                     <td className="py-2 text-right text-gray-500 dark:text-gray-400">{row.count}</td>

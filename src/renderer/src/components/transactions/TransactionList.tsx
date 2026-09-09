@@ -9,6 +9,7 @@ import { TransactionForm } from './TransactionForm'
 import type { Transaction } from '../../types'
 import { format, parseISO, isValid } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { capitalize } from '../../lib/format'
 
 const PAGE_SIZE = 20
 
@@ -58,7 +59,7 @@ export function TransactionList(): React.ReactElement {
     try {
       const d = parseISO(iso)
       if (!isValid(d)) return iso
-      return format(d, 'd MMM yyyy', { locale: es })
+      return capitalize(format(d, 'd MMM yyyy', { locale: es }))
     } catch {
       return iso
     }

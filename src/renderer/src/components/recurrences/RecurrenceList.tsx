@@ -8,6 +8,7 @@ import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { capitalize } from '../../lib/format'
 
 const FRECUENCIA_LABEL: Record<string, string> = {
   diario: 'Diario',
@@ -63,7 +64,7 @@ export function RecurrenceList(): React.ReactElement {
           {recurrences.map((rec) => {
             const proxima = (() => {
               try {
-                return format(parseISO(rec.proximaEjecucion), "d MMM yyyy", { locale: es })
+                return capitalize(format(parseISO(rec.proximaEjecucion), "d MMM yyyy", { locale: es }))
               } catch {
                 return rec.proximaEjecucion
               }

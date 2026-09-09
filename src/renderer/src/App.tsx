@@ -25,7 +25,7 @@ import { Configuracion } from './pages/Configuracion'
 import type { Transaction, Category, Recurrence, Budget } from './types'
 
 export default function App(): React.ReactElement {
-  const { user, loading, setUser, setLoading } = useAuthStore()
+  const { user, loading, setUser, setLoading, setProfile } = useAuthStore()
   const { setTransactions, setCategories, setRecurrences, setBudgets } = useDataStore()
   const { setTheme } = useThemeStore()
 
@@ -75,6 +75,7 @@ export default function App(): React.ReactElement {
       setCategories([])
       setRecurrences([])
       setBudgets([])
+      setProfile(null)
       return
     }
     const uid = user.uid
@@ -99,10 +100,16 @@ export default function App(): React.ReactElement {
       onSnapshot(
         query(collection(db, 'budgets'), where('userId', '==', uid)),
         (snap) => setBudgets(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Budget)))
-      )
+      ),
+      onSnapshot(doc(db, 'users', uid), (snap) => {
+        if (snap.exists()) {
+          const data = snap.data()
+          setProfile({ nombre: data.nombre ?? '', email: data.email ?? user.email ?? '' })
+        }
+      })
     ]
     return () => unsubs.forEach((u) => u())
-  }, [user, setTransactions, setCategories, setRecurrences, setBudgets])
+  }, [user, setTransactions, setCategories, setRecurrences, setBudgets, setProfile])
 
   if (loading) {
     return (
