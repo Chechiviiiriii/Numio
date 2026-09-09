@@ -96,9 +96,9 @@ export function BudgetManager(): React.ReactElement {
     setFormOpen(true)
   }
 
-  const openCreatePlantilla = (): void => {
+  const openCreatePlantilla = (cId = ''): void => {
     setEditingId(null)
-    setCatId('')
+    setCatId(cId)
     setLimite('')
     setModalScope('plantilla')
     setFormOpen(true)
@@ -346,10 +346,6 @@ export function BudgetManager(): React.ReactElement {
       {/* PLANTILLA view */}
       {activeTab === 'plantilla' && (
         <div className="space-y-4">
-          <div className="flex justify-end">
-            <Button onClick={openCreatePlantilla}>+ Nuevo</Button>
-          </div>
-
           {gastosCats.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 text-center text-gray-400">
               No hay categorías de gasto
@@ -386,9 +382,13 @@ export function BudgetManager(): React.ReactElement {
                           </Button>
                         </>
                       ) : (
-                        <span className="text-sm text-gray-400 dark:text-gray-500 italic">
-                          sin plantilla
-                        </span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => openCreatePlantilla(cat.id)}
+                        >
+                          + Crear
+                        </Button>
                       )}
                     </div>
                   </div>
