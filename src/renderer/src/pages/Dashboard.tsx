@@ -1,5 +1,6 @@
 import React from 'react'
 import { SummaryCards } from '../components/dashboard/SummaryCards'
+import { StatusCards } from '../components/dashboard/StatusCards'
 import { Charts } from '../components/dashboard/Charts'
 import { useDataStore } from '../stores/dataStore'
 import { format, parseISO } from 'date-fns'
@@ -27,6 +28,7 @@ export function Dashboard(): React.ReactElement {
       </div>
 
       <SummaryCards />
+      <StatusCards />
       <Charts />
 
       {upcoming.length > 0 && (
